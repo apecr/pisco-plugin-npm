@@ -29,7 +29,6 @@ Any step can ensure that **npm install** or **npm update** are correctly execute
   "npm": {
     "installed": true,
     "updated": true,
-    "forceLatest": false, (default is true)
     "baseDir" : "any", (default is '.')
     "directory" : "node_modules" (default is 'node_modules')
   }
@@ -38,7 +37,6 @@ Any step can ensure that **npm install** or **npm update** are correctly execute
 
   - **installed** _(default: false)_ Ensure that npm install is executed if ${npm.directory} doesn't exists execute npm install.
   - **updated** _(default: false)_ Ensure that `npm update` and `npm prune` are executed. Detect if there are symbolics links and ask user to delete
-  - **forceLatest** _(default: true)_ append --force-latest (-F) to npm install or npm update command.
   - **directory** _(default: 'node_modules')_ must to be the same value of `directory` in .npmrc file.
   - **baseDir** _(default: '.')_ path to npm.json file relative.
 
