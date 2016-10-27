@@ -1,0 +1,20 @@
+{
+  "name": "pisco-plugin-npm",
+  "version": "0.1.0",
+  "description": "Pisco plugin for npm",
+  "scripts": {
+    "deps": "npm install"
+  },
+  "keywords": [
+    "piscosour-recipe",
+    "piscosour",
+    "npm",
+    "plugin"
+  ],
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "devDependencies": {
+    "piscosour": "^1.0.0-alpha.8"
+  }
+}
