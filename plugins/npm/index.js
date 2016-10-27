@@ -1,7 +1,6 @@
 'use strict';
 
 const fs = require('fs');
-const path = require('path');
 
 module.exports = {
 
@@ -43,8 +42,7 @@ module.exports = {
         return this._npmInstall();
       } else if (this.params.npmDependencies.updated) {
         this.logger.info('npm', '#green', 'updating', '...');
-        return this._npmAreSymbolicLinks()
-          .then((result) => this._npmCheckIfUpdate(result));
+        return this._npmUpdate();
       } else {
         this.logger.info('npm installed:', '#green', 'OK');
       }
@@ -54,49 +52,6 @@ module.exports = {
       const args = [ 'install' ];
       return this.execute('npm', args)
         .then(() => this._npmPost());
-    },
-    _npmAreSymbolicLinks() {
-      this._npmPre();
-      if (!this.npmIsInstalled()) {
-        return Promise.resolve(false);
-      }
-      return new Promise((ok, ko) => {
-        const where = this.npmDirectory();
-        fs.readdir(where, (err, files) => {
-          if (err) {
-            return ko(err);
-          }
-
-          const promises = files.map((file) => new Promise((res, rej) => {
-            fs.lstat(path.resolve(where, file), (_err, stats) => {
-              if (_err) {
-                return rej();
-              }
-              const isSymbolicLink = stats.isSymbolicLink();
-              if (isSymbolicLink) {
-                this.logger.info('#yellow', `Symbolic link found: ${file}`);
-              }
-              return res(isSymbolicLink);
-            });
-          }));
-
-          return Promise.all(promises)
-            .then((result) => result.reduce((a, b) => a || b))
-            .then((result) => ok(result));
-        });
-      });
-    },
-    _npmCheckIfUpdate(check) {
-      if (check) {
-        this._npmPromptLinks();
-        return this.inquire('promptLinks')
-          .then(() => {
-            if (this.params.donpmUpdate) {
-              return this._npmUpdate();
-            }
-          });
-      }
-      return this._npmUpdate();
     },
     _npmPre() {
       if (this._npmIsBaseDir()) {
@@ -108,14 +63,6 @@ module.exports = {
         process.cwd(this.params.workingDir);
       }
       return result;
-    },
-    _npmPromptLinks() {
-      this.params.promptLinks = [ {
-        type: 'confirm',
-        name: 'donpmUpdate',
-        required: true,
-        message: `There are symbolic links in your ${this.npmDirectory()} folder. Do you want to update npm dependencies anyway?`
-      } ];
     },
     _npmUpdate() {
       this._npmPre();
