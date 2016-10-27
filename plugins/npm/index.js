@@ -6,14 +6,14 @@ const path = require('path');
 module.exports = {
 
   check() {
-    this.params.npm = this.params.npm ? this.params.npm : {};
+    this.params.npmDependencies = this.params.npmDependencies ? this.params.npmDependencies : {};
     this.params.stages = this.params.stages ? this.params.stages : [];
-    if ((this.params.npm.installed || this.params.npm.updated) && (this.params.stages.indexOf('check') >= 0) || this.params.stages.length === 0) {
+    if ((this.params.npmDependencies.installed || this.params.npmDependencies.updated) && (this.params.stages.indexOf('check') >= 0) || this.params.stages.length === 0) {
       return this._npmAction();
     }
   },
   run() {
-    if ((this.params.npm.installed || this.params.npm.updated) && this.params.stages.indexOf('run') >= 0) {
+    if ((this.params.npmDependencies.installed || this.params.npmDependencies.updated) && this.params.stages.indexOf('run') >= 0) {
       return this._npmAction();
     }
   },
@@ -29,7 +29,7 @@ module.exports = {
         .then((result) => this._npmPost(result));
     },
     npmDirectory() {
-      return this.params.npm.directory ? this.params.npm.directory : 'node_modules';
+      return this.params.npmDependencies.directory ? this.params.npmDependencies.directory : 'node_modules';
     },
     npmIsInstalled() {
       this._npmPre();
@@ -41,7 +41,7 @@ module.exports = {
       if (!this.npmIsInstalled()) {
         this.logger.info('npm', '#green', 'installing', '...');
         return this._npmInstall();
-      } else if (this.params.npm.updated) {
+      } else if (this.params.npmDependencies.updated) {
         this.logger.info('npm', '#green', 'updating', '...');
         return this._npmAreSymbolicLinks()
           .then((result) => this._npmCheckIfUpdate(result));
@@ -100,7 +100,7 @@ module.exports = {
     },
     _npmPre() {
       if (this._npmIsBaseDir()) {
-        process.cwd(this.params.npm.baseDir);
+        process.cwd(this.params.npmDependencies.baseDir);
       }
     },
     _npmPost(result) {
@@ -125,7 +125,7 @@ module.exports = {
         .then(() => this._npmPost());
     },
     _npmIsBaseDir() {
-      return this.params.npm.baseDir && this.fsExists(this.params.npm.baseDir);
+      return this.params.npmDependencies.baseDir && this.fsExists(this.params.npmDependencies.baseDir);
     }
   }
 };
