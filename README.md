@@ -27,7 +27,7 @@ Any step can ensure that **npm install** or **npm update** are correctly execute
 
 ```
 {
-  "npm": {
+  "npmDependencies": {
     "installed": true,
     "updated": true,
     "baseDir" : "any", (default is '.')
@@ -50,7 +50,7 @@ In config.json of your step
 ```
 {
   "stages" : ["check","run"],
-  "npm": {
+  "npmDependencies": {
     [...]
   }
 }
@@ -63,7 +63,7 @@ Normal use, ensure npm install was executed:
 
 ```
 {
-  "npm": {
+  "npmDependencies": {
     "installed": true
   }
 }
@@ -73,7 +73,7 @@ Check if there are symbolics links and ask user to update:
 
 ```
 {
-  "npm": {
+  "npmDependencies": {
     "updated": true
   }
 }
@@ -87,4 +87,3 @@ Execute **npm list ${opts}**
 | --- | --- |
 | opts | array with command options to append to npm list for example [ '--offline', '--json' ]  |
 | returns | a Promise with the complete child_process object result of the execution |
-
