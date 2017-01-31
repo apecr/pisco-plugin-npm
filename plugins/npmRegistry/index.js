@@ -6,13 +6,13 @@ const path = require('path');
 module.exports = {
 
   check: function() {
-    if (this.params.stages.indexOf('check') >= 0) {
+    if (this.params.stages && this.params.stages.indexOf('check') >= 0) {
       return this._doCheck();
     }
   },
 
   run: function() {
-    if (this.params.stages.indexOf('run') >= 0) {
+    if (this.params.stages && this.params.stages.indexOf('run') >= 0) {
       return this._doCheck();
     }
   },
