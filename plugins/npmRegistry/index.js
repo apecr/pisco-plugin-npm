@@ -33,6 +33,22 @@ module.exports = {
       }
       return -1;
     },
+    checkNames(config) {
+      const remote = this.sh('git remote -v|awk \'{print $2}\'|uniq');
+      const url = remote.stdout.toString();
+      const names = url.split('/');
+      if (remote.status === 0 && names.length > 0) {
+        const name = names[names.length - 1].replace('.git\n', '');
+        if (config.name === name) {
+          return {name: name, url: url.replace('\n', '')};
+        } else {
+          this.logger.warn('#cyan', name, '#grey', '( npm registry ) ->', '#green', this.params.registryDomain, '-> npm name is:', '#cyan', config.name, '- repo name is:', '#cyan', name, '-', '#red', 'ERROR');
+        }
+      } else {
+        this.logger.warn('#red', `impossible to get remote url! error: ${remote.stderr.toString()}`);
+      }
+      return false;
+    },
     _doCheck() {
       this.params.registryUrl = `${this.params.registryProtocol}://${this.params.registryDomain}/${this.params.registryBase}/${this.params.registries.npm.registry}`;
       return this._checkNpm();
