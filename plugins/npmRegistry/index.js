@@ -24,9 +24,9 @@ module.exports = {
       if (names) {
         const command = this.sh(`npm publish --registry ${this.params.registryUrl}`);
         if (command.stderr.toString().indexOf('pre-existing version') >= 0) {
-          this.logger.info('#cyan', names.name, '(', npm.version, ') ->', '#grey', '( npm publish ) ->', '#green', this.params.registryDomain, '-', '#green', 'Already published!');
+          this.logger.info('#cyan', names.name, '(', npm.version, ') ->', '#grey', '( npm publish ) ->', '#green', this.params.registryUrl, '-', '#green', 'Already published!');
         } else {
-          this.logger.info('#cyan', names.name, '(', npm.version, ') ->', '#grey', '( npm publish ) ->', '#green', this.params.registryDomain, '-', command.status === 0 ? '#green' : '#red', command.status === 0 ? 'OK' : 'ERROR');
+          this.logger.info('#cyan', names.name, '(', npm.version, ') ->', '#grey', '( npm publish ) ->', '#green', this.params.registryUrl, '-', command.status === 0 ? '#green' : '#red', command.status === 0 ? 'OK' : 'ERROR');
         }
         this.logger.trace(command.stdout.toString(), command.stderr.toString());
         return command.status;
