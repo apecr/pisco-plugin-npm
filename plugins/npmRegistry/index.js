@@ -20,34 +20,17 @@ module.exports = {
 
     publishNpm() {
       const npm = this.fsReadConfig('package.json');
-      const names = this.checkNames(npm);
-      if (names) {
+      if (npm.name) {
         const command = this.sh(`npm publish --registry ${this.params.registryUrl}`);
         if (command.stderr.toString().indexOf('pre-existing version') >= 0) {
-          this.logger.info('#cyan', names.name, '(', npm.version, ') ->', '#grey', '( npm publish ) ->', '#green', this.params.registryUrl, '-', '#green', 'Already published!');
+          this.logger.info('#cyan', npm.name, '(', npm.version, ') ->', '#grey', '( npm publish ) ->', '#green', this.params.registryUrl, '-', '#green', 'Already published!');
         } else {
-          this.logger.info('#cyan', names.name, '(', npm.version, ') ->', '#grey', '( npm publish ) ->', '#green', this.params.registryUrl, '-', command.status === 0 ? '#green' : '#red', command.status === 0 ? 'OK' : 'ERROR');
+          this.logger.info('#cyan', npm.name, '(', npm.version, ') ->', '#grey', '( npm publish ) ->', '#green', this.params.registryUrl, '-', command.status === 0 ? '#green' : '#red', command.status === 0 ? 'OK' : 'ERROR');
         }
         this.logger.trace(command.stdout.toString(), command.stderr.toString());
         return command.status;
       }
       return -1;
-    },
-    checkNames(config) {
-      const remote = this.sh('git remote -v|awk \'{print $2}\'|uniq');
-      const url = remote.stdout.toString();
-      const names = url.split('/');
-      if (remote.status === 0 && names.length > 0) {
-        const name = names[names.length - 1].replace('.git\n', '');
-        if (config.name === name) {
-          return {name: name, url: url.replace('\n', '')};
-        } else {
-          this.logger.warn('#cyan', name, '#grey', '( npm registry ) ->', '#green', this.params.registryDomain, '-> npm name is:', '#cyan', config.name, '- repo name is:', '#cyan', name, '-', '#red', 'ERROR');
-        }
-      } else {
-        this.logger.warn('#red', `impossible to get remote url! error: ${remote.stderr.toString()}`);
-      }
-      return false;
     },
     _doCheck() {
       this.params.registryUrl = `${this.params.registryProtocol}://${this.params.registryDomain}/${this.params.registryBase}/${this.params.registries.npm.registry}`;
