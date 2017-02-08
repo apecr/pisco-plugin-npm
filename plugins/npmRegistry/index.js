@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const semver = require('semver');
 
 module.exports = {
 
@@ -21,7 +22,12 @@ module.exports = {
     publishNpm() {
       const npm = this.fsReadConfig('package.json');
       if (npm.name) {
-        const command = this.sh(`npm publish --registry ${this.params.registryUrl}`);
+        const prerelease = semver.prerelease(npm.version);
+        let tagger = '';
+        if (prerelease[0] && prerelease[0].length > 0) {
+          tagger = `--tag ${prerelease[0]}`;
+        }
+        const command = this.sh(`npm publish --registry ${this.params.registryUrl} ${tagger}`);
         if (command.stderr.toString().indexOf('pre-existing version') >= 0) {
           this.logger.info('#cyan', npm.name, '(', npm.version, ') ->', '#grey', '( npm publish ) ->', '#green', this.params.registryUrl, '-', '#green', 'Already published!');
         } else {
