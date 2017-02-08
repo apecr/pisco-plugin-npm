@@ -24,7 +24,7 @@ module.exports = {
       if (npm.name) {
         const prerelease = semver.prerelease(npm.version);
         let tagger = '';
-        if (prerelease[0] && prerelease[0].length > 0) {
+        if (prerelease && prerelease[0] && prerelease[0].length > 0) {
           tagger = `--tag ${prerelease[0]}`;
         }
         const command = this.sh(`npm publish --registry ${this.params.registryUrl} ${tagger}`);
