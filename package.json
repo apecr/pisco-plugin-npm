@@ -18,6 +18,6 @@
     "semver": "^5.1.0"
   },
   "devDependencies": {
-    "piscosour": "^1.00-alpha.8"
+    "piscosour": "^1.0.0-alpha.8"
   }
 }
