@@ -1,6 +1,6 @@
 {
   "name": "pisco-plugin-npm",
-  "version": "0.3.3-rc.0",
+  "version": "0.3.3",
   "description": "Pisco plugin for npm",
   "scripts": {
     "deps": "npm install"
