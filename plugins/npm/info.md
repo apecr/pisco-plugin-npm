@@ -29,6 +29,7 @@ Any step can ensure that **npm install** or **npm update** are correctly execute
   "npmDependencies": {
     "installed": true,
     "updated": true,
+    "lockedInstall": true (default is false)
     "baseDir" : "any", (default is '.')
     "directory" : "node_modules" (default is 'node_modules')
   }
@@ -37,6 +38,7 @@ Any step can ensure that **npm install** or **npm update** are correctly execute
 
   - **installed** _(default: false)_ Ensure that npm install is executed if ${npm.directory} doesn't exists execute npm install.
   - **updated** _(default: false)_ Ensure that `npm update` and `npm prune` are executed. Detect if there are symbolics links and ask user to delete
+  - **lockedInstall** _(default: false)_ If true and _npm_shrinkwrap.json exists installation is locked at this file.
   - **directory** _(default: 'node_modules')_ must to be the same value of `directory` in .npmrc file.
   - **baseDir** _(default: '.')_ path to npm.json file relative.
 

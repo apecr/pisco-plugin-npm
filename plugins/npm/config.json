@@ -1,4 +1,5 @@
 {
   "name" : "npm",
-  "description" : "Manage npm in steps"
+  "description" : "Manage npm in steps",
+  "shrinkwrapFile" : "npm-shrinkwrap.json"
 }

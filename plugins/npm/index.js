@@ -1,6 +1,7 @@
 'use strict';
 
 const fs = require('fs');
+const shrinkwrapFile = 'npm-shrinkwrap.json';
 
 module.exports = {
 
@@ -18,6 +19,24 @@ module.exports = {
   },
 
   addons: {
+    packageConsolidate(config) {
+      return this._npmAction()
+        .then(() => this._npmCompare(config));
+    },
+    _npmCompare(config) {
+      const file = shrinkwrapFile;
+      this._npmPre();
+      return this.execute('npm', [ 'shrinkwrap' ])
+        .then(() => this._npmPost())
+        .then(() => {
+          const oldf = this.fsReadFile(`_${file}`);
+          const newf = this.fsReadFile(file);
+          fs.renameSync(file, `_${file}`);
+          config.hasChanged = oldf.toString() !== newf.toString() ? `_${file}` : false;
+          this.logger.info('Dependencies has changed', config.hasChanged ? '#green' : '#yellow', config.hasChanged !== false);
+          return Promise.resolve(config);
+        });
+    },
     npmList(params) {
       this._npmPre();
       let args = [ 'list' ];
@@ -45,6 +64,7 @@ module.exports = {
         return this._npmUpdate();
       } else {
         this.logger.info('npm installed:', '#green', 'OK');
+        return Promise.resolve();
       }
     },
     _npmInstall() {
@@ -57,10 +77,18 @@ module.exports = {
       if (this._npmIsBaseDir()) {
         process.cwd(this.params.npmDependencies.baseDir);
       }
+      if (this.params.npmDependencies.lockedInstall && this.fsExists(`_${shrinkwrapFile}`)) {
+        fs.renameSync(`_${shrinkwrapFile}`, shrinkwrapFile);
+      } else {
+        this.logger.warn('Is not possible to make a locked installation.', '#green', `_${shrinkwrapFile}`, 'do not exists');
+      }
     },
     _npmPost(result) {
       if (this._npmIsBaseDir()) {
         process.cwd(this.params.workingDir);
+      }
+      if (this.params.npmDependencies.lockedInstall && this.fsExists(shrinkwrapFile)) {
+        fs.renameSync(shrinkwrapFile, `_${shrinkwrapFile}`);
       }
       return result;
     },
