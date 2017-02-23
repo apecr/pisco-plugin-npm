@@ -1,6 +1,6 @@
 {
   "name": "pisco-plugin-npm",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "dependencies": {
     "glob": {
       "version": "7.1.1",
