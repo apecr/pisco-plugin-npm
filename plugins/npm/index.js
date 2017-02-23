@@ -77,10 +77,12 @@ module.exports = {
       if (this._npmIsBaseDir()) {
         process.cwd(this.params.npmDependencies.baseDir);
       }
-      if (this.params.npmDependencies.lockedInstall && this.fsExists(`_${shrinkwrapFile}`)) {
-        fs.renameSync(`_${shrinkwrapFile}`, shrinkwrapFile);
-      } else {
-        this.logger.warn('Is not possible to make a locked installation.', '#green', `_${shrinkwrapFile}`, 'do not exists');
+      if (this.params.npmDependencies.lockedInstall) {
+        if (this.fsExists(`_${shrinkwrapFile}`)) {
+          fs.renameSync(`_${shrinkwrapFile}`, shrinkwrapFile);
+        } else {
+          this.logger.warn('Is not possible to make a locked installation.', '#green', `_${shrinkwrapFile}`, 'do not exists');
+        }
       }
     },
     _npmPost(result) {
