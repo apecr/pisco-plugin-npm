@@ -56,15 +56,19 @@ module.exports = {
       return result;
     },
     _npmAction() {
-      if (!this.npmIsInstalled()) {
-        this.logger.info('npm', '#green', 'installing', '...');
-        return this._npmInstall();
-      } else if (this.params.npmDependencies.updated) {
-        this.logger.info('npm', '#green', 'updating', '...');
-        return this._npmUpdate();
+      if (this.fsExists('package.json')) {
+        if (!this.npmIsInstalled()) {
+          this.logger.info('npm', '#green', 'installing', '...');
+          return this._npmInstall();
+        } else if (this.params.npmDependencies.updated) {
+          this.logger.info('npm', '#green', 'updating', '...');
+          return this._npmUpdate();
+        } else {
+          this.logger.info('npm installed:', '#green', 'OK');
+          return Promise.resolve();
+        }
       } else {
-        this.logger.info('npm installed:', '#green', 'OK');
-        return Promise.resolve();
+        this.logger.info('package.json is', '#yellow', 'not found', '->', '#yellow', 'NOT INSTALLED');
       }
     },
     _npmInstall() {
